@@ -1,0 +1,38 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <title>My FastAPI App</title>
+</head>
+<body>
+    <h3>Video Feed</h3>
+    <img src="/VIDFeed" />
+    <h1>Bot Position</h1>
+
+<button id="fetchPosition">Fetch Bot Position</button>
+<table id="positionTable">
+    <thead>
+        <tr>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+            <th>R</th>
+            <th>J1</th>
+            <th>J2</th>
+            <th>J3</th>
+            <th>J4</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="8">No data available.</td>
+        </tr>
+    </tbody>
+</table>
+
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+</html>
