@@ -9,3 +9,5 @@ uvicorn
 gTTS
 simpleaudio
 pydub
+pyzbar
+ultralytics
