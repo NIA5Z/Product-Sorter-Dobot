@@ -7,9 +7,9 @@ from dependency.Prediction import init,predict
 DecodedQR = None
 DecodedBar = None
 
-def video(Source=0,Width=640,Height=480,frame_rate = 5):
+def video(Model="./Model/Gen_I/weights/best.pt",Source=0,Width=640,Height=480,frame_rate = 5):
     global DecodedQR,DecodedBar
-    init("./Model/Gen_I/weights/best.pt")
+    init(Model)
     prev_time = 0
     fps = 0
 

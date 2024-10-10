@@ -13,7 +13,7 @@ cursor = connection.cursor()
 def create_table(loc="./dependency/SQL_Database/Setup.sql",overwrite=False): 
  global Init
 
- if Init == 1 and not overwrite:
+ if Init == 1 and overwrite:
   print("Database.db already exists! Are you sure you want to overwrite the current db? If so, use overwrite=True.")
   return
 

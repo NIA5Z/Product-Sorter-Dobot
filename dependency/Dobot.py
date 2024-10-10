@@ -1,6 +1,7 @@
 import serial
 from serial.tools import list_ports
 from pydobot import Dobot
+from dependency.Speech import speak
 
 Init = 0
 device = None
@@ -19,7 +20,7 @@ def init():
 
  try:
     device = Dobot(port=port, verbose=True)
-    Init = 1
+    home()
     print("Dobot connected successfully!")
  except Exception as e:
     print(f"Failed to connect to Dobot: {e}")
@@ -46,11 +47,23 @@ def position():
     x, y, z, r, j1, j2, j3, j4 = device.pose()
     return x, y, z, r, j1, j2, j3, j4 
 
+def home(overwrite=False):
+   global Init
+   if (Init == 0 or overwrite==True):
+    try:
+     xh, yh, zh, rh = position()[:4]
+    except:
+      return
+    Init = 1
+    print("Forward Home Set")
+   else:
+      speak("Returning Home.")
+      move(xh,yh,zh,rh)
+
 def close():
    global Init, device
 
    if Init == 0:
     print("Library haven't been initialized yet.")
     return
-   
    device.close()
