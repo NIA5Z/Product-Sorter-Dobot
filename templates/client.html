@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style-v2.css') }}">
+    <link rel="icon" href="{{ url_for('static', path='./misc/favicon.ico') }}" type="image/x-icon">
+    <title>Robot Management Web-Application</title>
+</head>
+
+<header id="index-header" class="headless-header">
+    <div class="title">Robot Management Application</div>
+</header>
+
+<body id="theme-body" class="dark-mode">
+    <div class="container">
+        <div class="video-container">
+            <h1 class="center">Video Feed</h2>
+            <img src="/VIDFeed" alt="Video Feed" width="640" height="640" onerror="this.onerror=null; this.src='./static/misc/offline.webp';"/>
+        </div>
+        <div class="mission-controller">
+            <h1 class="center">Mission Control</h2>     
+            <div class="controller"> 
+                <button id="home-btn">🏠 Home Device</button>
+                <button id="position-btn">📍 Get Position</button>
+                <button id="start-btn" class="success-button">🚀 Start Device</button>  
+                <button id="close-btn" class="danger-button">❌ Close Device</button>  
+            </div>
+
+            <div class="sql">
+                <h2 class="center">SQL Database</h2>
+                <div class="data-list">
+                    <ul id="data-list">
+                        {% if data %}
+                            {% for item in data %}
+                                <li class="data-item">
+                                    <div class="item-details">
+                                        <h3>{{ item[3] }} (ID: {{ item[1] }})</h3>
+                                        <strong>CODE:</strong> <span>{{ item[1] }}</span><br>
+                                        <strong>BRAND:</strong> <span>{{ item[2] }}</span><br>
+                                        <strong>NAME:</strong> <span>{{ item[3] }}</span><br>
+                                        <strong>TYPE:</strong> <span>{{ item[4] }}</span><br>
+                                        <strong>Price per unit:</strong> <span>${{ item[5] }}</span><br>
+                                        <strong>Base Price:</strong> <span>${{ item[6] }}</span><br>
+                                        <strong>Amount:</strong> <span>{{ item[7] }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No data available</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+</html>

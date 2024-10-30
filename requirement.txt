@@ -1,13 +1,8 @@
 fastapi
 opencv-python
 pydobot
-torch 
-torchvision 
-torchaudio
 qreader
 uvicorn
-gTTS
-simpleaudio
-pydub
-pyzbar
+uvicorn[standard]
 ultralytics
+httpx

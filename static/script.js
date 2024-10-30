@@ -1,25 +1,33 @@
-document.getElementById('fetchPosition').addEventListener('click', async () => {
+async function callAPI(endpoint) {
     try {
-        const response = await fetch('/BotPosition');
+        const response = await fetch(`${endpoint}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        
-        const tableBody = document.getElementById('positionTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = ''; // Clear previous data
-
-        const newRow = tableBody.insertRow();
-        newRow.insertCell(0).textContent = data.x || 'N/A';
-        newRow.insertCell(1).textContent = data.y || 'N/A';
-        newRow.insertCell(2).textContent = data.z || 'N/A';
-        newRow.insertCell(3).textContent = data.r || 'N/A';
-        newRow.insertCell(4).textContent = data.j1 || 'N/A';
-        newRow.insertCell(5).textContent = data.j2 || 'N/A';
-        newRow.insertCell(6).textContent = data.j3 || 'N/A';
-        newRow.insertCell(7).textContent = data.j4 || 'N/A';
+        console.log(data); 
     } catch (error) {
-        console.error('Error fetching bot position:', error);
-        alert('Failed to fetch position data.');
+        console.error('Error:', error);
     }
+}
+
+document.getElementById('start-btn').addEventListener('click', () => {
+    callAPI('start');
+});
+
+document.getElementById('close-btn').addEventListener('click', () => {
+    callAPI('close');
+});
+
+document.getElementById('home-btn').addEventListener('click', () => {
+    callAPI('home'); 
+});
+
+document.getElementById('position-btn').addEventListener('click', () => {
+    callAPI('position');
 });

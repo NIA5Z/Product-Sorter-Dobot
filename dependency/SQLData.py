@@ -13,8 +13,8 @@ cursor = connection.cursor()
 def create_table(loc="./dependency/SQL_Database/Setup.sql",overwrite=False): 
  global Init
 
- if Init == 1 and overwrite:
-  print("Database.db already exists! Are you sure you want to overwrite the current db? If so, use overwrite=True.")
+ if Init == 1 and not overwrite:
+  print("Database.db exist, however if you want to overwrite it then create_table(overwrite=True)")
   return
 
  with open(loc, 'r') as file:
@@ -30,7 +30,7 @@ def create_table(loc="./dependency/SQL_Database/Setup.sql",overwrite=False):
     print(f"An error occurred: {e}")
     return
 
-def insert(pcode, pbrand, pname, ptype, pup, pbp, pqty):
+def insert(data):
 
    if Init == 0:
      print("Library haven't been initialized yet.")
@@ -41,18 +41,18 @@ def insert(pcode, pbrand, pname, ptype, pup, pbp, pqty):
    VALUES (?, ?, ?, ?, ?, ?, ?);
    """
    try:
-      cursor.execute(sql_query, (pcode, pbrand, pname, ptype, pup, pbp, pqty))
+      cursor.execute(sql_query, (data.CODE,data.BRAND, data.NAME, data.TYPE, data.PUnit, data.PBase, data.QTY))
       connection.commit()
       print("Product inserted successfully.")
    except sql.Error as e:
       print(f"An error occurred: {e}")
 
-def remove(pcode):
+def remove(target,pcode):
     if Init == 0:
         print("Library hasn't been initialized yet.")
         return
 
-    sql_query = "DELETE FROM Product WHERE PCODE = ?;"
+    sql_query = f"DELETE FROM Product WHERE {target} = ?;"
     try:
         cursor.execute(sql_query, (pcode,))
         connection.commit()
@@ -60,33 +60,36 @@ def remove(pcode):
     except sql.Error as e:
         print(f"An error occurred: {e}")
 
-def fetch(target):
+def fetch(data):
    if Init == 0:
      print("Library haven't been initialized yet.")
      return
    
-   sql_query = f"SELECT {target} FROM Product;"
+   sql_query = """SELECT * FROM Product WHERE PCODE = ? ;"""
    try:
-      cursor.execute(sql_query)
-      results = cursor.fetchall()
-      return results
+      cursor.execute(sql_query, (data,))  
+      products = cursor.fetchall()
+      return products
    except sql.Error as e:
       print(f"An error occurred: {e}")
       return None
     
-def search(target, value):
-    if Init == 0:
+def update(data):
+   if Init == 0:
      print("Library haven't been initialized yet.")
      return
-    
-    sql_query = f"SELECT {target} FROM Product WHERE {target} = ?;"
-    try:
-        cursor.execute(sql_query, (value,))  
-        results = cursor.fetchall()
-        return results
-    except sql.Error as e:
-        print(f"An error occurred: {e}")
-        return None
+   
+   sql_query = """
+        UPDATE Product
+        SET PBRAND = ?, PNAME = ?, PTYPE = ?, PUP = ?, PBP = ?, PQTY = ?
+        WHERE PCODE = ?;
+   """
+   try:
+      cursor.execute(sql_query, (data.BRAND, data.NAME, data.TYPE, data.PUnit, data.PBase, data.QTY, data.CODE))
+      connection.commit()
+      print("Product updated successfully.")
+   except sql.Error as e:
+      print(f"An error occurred: {e}")
 
 def fetchall():
    data = []

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite Backend Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            width: 100%;
+        }
+
+        h2 {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .data-list {
+            flex: 2;
+            margin-right: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .collapsible {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .collapsible:hover {
+            background-color: #45a049;
+        }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                flex-direction: column;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function toggleContent(event) {
+            const content = event.currentTarget.nextElementSibling;
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="data-list">
+            <h2>SQLite Data</h2>
+            <ul id="data-list">
+                {% if data %}
+                    {% for item in data %}
+                        <li class="data-item">
+                            <div class="item-details">
+                                <h2>{{ item[3] }} (ID:{{ item[1] }})</h2>
+                                <strong>CODE:</strong> <span>{{ item[1] }}</span><br>
+                                <strong>BRAND:</strong> <span>{{ item[2] }}</span><br>
+                                <strong>NAME:</strong> <span>{{ item[3] }}</span><br>
+                                <strong>TYPE:</strong> <span>{{ item[4] }}</span><br>
+                                <strong>PUnit:</strong> <span>${{ item[5] }}</span><br>
+                                <strong>PBase:</strong> <span>${{ item[6] }}</span><br>
+                                <strong>QTY:</strong> <span>{{ item[7] }}</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>No data available</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="sidebar">
+            <h2>Database Management Tools</h2>
+            <button class="collapsible" onclick="toggleContent(event)">Insert New Data</button>
+            <div class="content">
+                <form action="/insert" method="get">
+                    <label for="insert-code">Product Code:</label>
+                    <input type="number" id="insert-code" name="CODE" required>
+                    
+                    <label for="insert-brand">Brand:</label>
+                    <input type="text" id="insert-brand" name="BRAND" required>
+                    
+                    <label for="insert-name">Name:</label>
+                    <input type="text" id="insert-name" name="NAME" required>
+                    
+                    <label for="insert-type">Type:</label>
+                    <input type="text" id="insert-type" name="TYPE" required>
+                    
+                    <label for="insert-punit">Price per unit:</label>
+                    <input type="number" step="0.01" id="insert-punit" name="PUnit" required>
+                    
+                    <label for="insert-pbase">Base Price:</label>
+                    <input type="number" id="insert-pbase" name="PBase" required>
+                    
+                    <label for="insert-qty">Quantity:</label>
+                    <input type="number" id="insert-qty" name="QTY" required>
+                    
+                    <button type="submit">Insert</button>
+                </form>
+            </div>
+
+            <button class="collapsible" onclick="toggleContent(event)">Update Existing Data</button>
+            <div class="content">
+                <form action="/update" method="get">
+                    <label for="update-code">Product Code:</label>
+                    <input type="number" id="update-code" name="CODE" required>
+                    
+                    <label for="update-brand">Brand:</label>
+                    <input type="text" id="update-brand" name="BRAND" required>
+                    
+                    <label for="update-name">Name:</label>
+                    <input type="text" id="update-name" name="NAME" required>
+                    
+                    <label for="update-type">Type:</label>
+                    <input type="text" id="update-type" name="TYPE" required>
+                    
+                    <label for="update-punit">Price per ynit:</label>
+                    <input type="number" step="0.01" id="update-punit" name="PUnit" required>
+                    
+                    <label for="update-pbase">Base price:</label>
+                    <input type="number" id="update-pbase" name="PBase" required>
+                    
+                    <label for="update-qty">Quantity:</label>
+                    <input type="number" id="update-qty" name="QTY" required>
+                    
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+
+            <button class="collapsible" onclick="toggleContent(event)">Remove Data</button>
+            <div class="content">
+                <form action="/remove" method="get">
+                    <label for="selection">Select:</label>
+                    <div>
+                        <select id="selection" name="target" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px;">
+                            <option value="PNAME">Name</option>
+                            <option value="PCODE">Product Code</option>
+                        </select>
+                    </div>
+                    <label for="remove-code">ID:</label>
+                    <input type="text" id="remove-code" name="CODE" required>
+                    <button type="submit">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const socket = new WebSocket("ws://127.0.0.1:1433/ws");
+
+    socket.onmessage = function(event) {
+        // Handle the incoming message
+        console.log(event.data); // You can log it for debugging
+        location.reload(); // Refresh the page
+    };
+
+    socket.onclose = function(event) {
+        console.log("WebSocket closed");
+    };
+</script>
+</html>
