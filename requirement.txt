@@ -6,3 +6,4 @@ uvicorn
 uvicorn[standard]
 ultralytics
 httpx
+requests

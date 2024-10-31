@@ -1,6 +1,6 @@
 import cv2
 import time
-import json
+from Req import get
 import math
 from dependency.QRread import ReadCV
 from dependency.Prediction import init,predict
@@ -9,7 +9,7 @@ from dependency.Dobot import move,position,MarkLoc,home,partol
 DecodedQR = None
 classes,boxes = None,None
 
-def video(Model="./Model/Gen_II/Sub_Model/QRBar_Model/QRBarG4.pt",Source=0,Width=640,Height=640,frame_rate = 5):
+def video(Model="./Model/Gen_II/Sub_Model/QRBar_Model/NCNN/best_ncnn_model",Source=0,Width=640,Height=640,frame_rate = 5,web=None):
     global DecodedQR,boxes,classes,Type,PID
     init(Model)
     prev_time = 0
@@ -131,7 +131,22 @@ def video(Model="./Model/Gen_II/Sub_Model/QRBar_Model/QRBarG4.pt",Source=0,Width
                   move(xr,yr,zr-50,rr,s=True)
                   move(xr,yr,zr,rr)
                   home()
-                  lock.append(f"{Type} {PID}")
+                  pull = web + f"/fetch?CODE={PID}"
+                  respond = get(pull).content.decode("utf-8").replace("[","").replace("]","").split(',')
+                  code = int(respond[1])
+                  brand = respond[2].replace('"', "")
+                  name = respond[3].replace('"', "")
+                  type_ = respond[4].replace('"', "")
+                  punit = float(respond[5])
+                  pbase = int(respond[6])
+                  qty_adjust = int(respond[7])-1 
+                  push = (
+                     f"{web}/update?CODE={code}&BRAND={brand}&NAME={name}"
+                     f"&TYPE={type_}&PUnit={punit}&PBase={pbase}&QTY={qty_adjust}"
+                    )
+                  get(push)
+                  if qty_adjust == 0: 
+                   lock.append(f"{Type} {PID}")
                   xr,yr,zr,rr = x,y,z,r
 
                except:

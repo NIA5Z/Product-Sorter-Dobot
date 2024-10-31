@@ -20,6 +20,9 @@ origins = [
     "http://localhost:1433"
 ]
 
+SQLServer=str(input("Give me the IP for SQL Server API: "))
+origins.append(SQLServer)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  
@@ -31,9 +34,10 @@ app.add_middleware(
 @cache
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    global SQLServer
     try:
      async with httpx.AsyncClient() as client:
-        response = await client.get("http://localhost:1433/data")
+        response = await client.get(SQLServer)
         return templates.TemplateResponse("client.html", {"request": request, "data": response.json()})
     except:
        print("Warning: The SQL Server is not up, switching to Local Mode.")
@@ -41,12 +45,12 @@ async def index(request: Request):
 
 @app.get("/VIDFeed")
 async def VIDFeed():
-    global start,status
+    global start,status,SQLServer
     if start:
      status="Checked"
      device = Dobot(port="COM3")
      init(device)
-     return StreamingResponse(video(Source=0), media_type="multipart/x-mixed-replace; boundary=frame")
+     return StreamingResponse(video(Source=0,web=SQLServer), media_type="multipart/x-mixed-replace; boundary=frame")
     return
 
 @app.get("/start")

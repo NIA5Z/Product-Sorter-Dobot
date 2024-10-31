@@ -47,7 +47,6 @@ async def index(request: Request):
 @app.get("/data", response_class=JSONResponse)
 async def fetchALL_data():
     Fetchdata = fetchall()
-    await notify_clients()
     return Fetchdata
 
 @app.get("/fetch")
@@ -108,3 +107,4 @@ if __name__ == "__main__":
 #http://127.0.0.1:8000/insert?CODE=532&BRAND=ExampleBrand&NAME=ExampleName&TYPE=ExampleType&PUnit=10.99&PBase=100&QTY=50
 #[1,53335521,"Sony","Playstation 5","Eletronic",499.99,399,1]
 #http://127.0.0.1:8000/update?CODE=53335521&BRAND=Brony&NAME=Ponestation 420&TYPE=Electronic&PUnit=500&PBase=399&QTY=0
+#requests.get()

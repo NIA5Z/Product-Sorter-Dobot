@@ -18,4 +18,4 @@ def ReadCV(frame):
   if decoded_text is not None and len(decoded_text) > 0:
    return decoded_text
 
- 
+print(Read(["C:/Users/Obetater/Desktop/Product-Sorter-Dobot/qrcode-300x300.png"]))
